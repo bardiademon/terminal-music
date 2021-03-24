@@ -13,7 +13,7 @@ public class Database
 {
     private Connection connection;
 
-    private String nameDatabase;
+    private final String nameDatabase;
 
     public Database (String NameDatabase)
     {

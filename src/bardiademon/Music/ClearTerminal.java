@@ -2,9 +2,15 @@ package bardiademon.Music;
 
 import java.io.IOException;
 
-public class ClearTerminal
+public class ClearTerminal extends Thread
 {
-    public ClearTerminal ()
+    ClearTerminal ()
+    {
+//        start ();
+    }
+
+    @Override
+    public void run ()
     {
         String code;
         String osName = System.getProperty ("os.name");

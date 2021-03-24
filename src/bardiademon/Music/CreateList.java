@@ -48,11 +48,11 @@ class CreateList
                     break;
                 default:
                 case BACK:
-                    Music._Music.titleAndNumber ();
+                    Music.titleAndNumber ();
                     break;
             }
         }
-        else Music._Music.titleAndNumber ();
+        else Music.titleAndNumber ();
     }
 
     @bardiademon

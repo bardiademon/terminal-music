@@ -49,7 +49,7 @@ class YourList
             else System.err.println ("\nError");
         }
         else System.err.println ("\nList Not Found");
-        Music._Music.titleAndNumber ();
+        Music.titleAndNumber ();
     }
 
     static void playList (int id)

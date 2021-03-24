@@ -7,9 +7,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Music" level="project" />
+    <orderEntry type="library" name="sqlite-jdbc-3.34.0" level="project" />
     <orderEntry type="library" name="commons-io-2.6" level="project" />
     <orderEntry type="library" name="jlayer-1.0.1" level="project" />
-    <orderEntry type="library" name="sqlite-jdbc-3.7.2" level="project" />
     <orderEntry type="library" name="mp3agic-0.9.1" level="project" />
   </component>
+  <component name="POM File Configuration" pomFile="" />
 </module>

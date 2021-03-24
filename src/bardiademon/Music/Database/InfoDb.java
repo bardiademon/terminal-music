@@ -8,7 +8,7 @@ import java.io.File;
 public class InfoDb
 {
     private static final String TYPE = ".db";
-    static final String ADDRESS_DATABASE = System.getProperty ("user.dir") + File.separator + "Database" + File.separator;
+    static final String ADDRESS_DATABASE = new File (System.getProperty ("user.dir")).getPath () + File.separator + "Database" + File.separator;
 
     @bardiademon
     public static class PublicRow
@@ -40,6 +40,4 @@ public class InfoDb
             public static final String NAME_TABLE = "name_" + ListMusic.NAME_TABLE, NAME = "name";
         }
     }
-
-
 }

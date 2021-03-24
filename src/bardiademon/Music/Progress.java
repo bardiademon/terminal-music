@@ -44,7 +44,7 @@ class Progress
                 System.out.printf ("\r%d%%" , d0);
                 if (Music.IsComplete () || Music.activeControl) break;
             }
-            if (isBreak && !Music.getInput) Music._Music.titleAndNumber ();
+            if (isBreak && !Music.getInput) Music.titleAndNumber ();
             isBreak = false;
         }).start ();
     }
