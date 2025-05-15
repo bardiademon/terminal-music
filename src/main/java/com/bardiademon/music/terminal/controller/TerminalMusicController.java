@@ -634,7 +634,6 @@ public class TerminalMusicController {
 
     private int newPlayListIndex(int index) {
         if (shuffle) {
-            System.out.println("playingMusicIndex = " + playingMusicIndex);
             Collections.shuffle(playingMusicIndex);
             return playingMusicIndex.remove(random.nextInt(playingMusicIndex.size()));
         }
@@ -676,7 +675,7 @@ public class TerminalMusicController {
             playMusic(playedMusic, true, false, nextMusic, preMusic);
             return null;
         }));
-        menuPlayMusicTitles.add(MenuTitleModel.createVoid(player.isRepeat() ? "UnRepeat" : "Repeat", unused -> {
+        menuPlayMusicTitles.add(MenuTitleModel.createVoid("Repeat [" + (player.isRepeat() ? "on" : "off") + "]", unused -> {
             player.setRepeat();
             playMusic(playedMusic, false, false, nextMusic, preMusic);
             return null;
@@ -694,7 +693,7 @@ public class TerminalMusicController {
             playMusic(playedMusic, false, false, nextMusic, preMusic);
             return null;
         }));
-        menuPlayMusicTitles.add(MenuTitleModel.createVoid("Shuffle", unused -> {
+        menuPlayMusicTitles.add(MenuTitleModel.createVoid("Shuffle [" + (shuffle ? "on" : "off") + "]", unused -> {
             shuffle = !shuffle;
             playMusic(playedMusic, false, false, nextMusic, preMusic);
             return null;

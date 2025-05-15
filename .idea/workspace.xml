@@ -5,91 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ab22986-1609-4dea-90d3-40377c4b5932" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/discord.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/terminal-music.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Music_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Music.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/commons_io_2_6.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/jlayer_1_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/mp3agic_0_9_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sqlite_jdbc_3_34_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Database/File.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Music.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/commons-io-2.6.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/jlayer-1.0.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/mp3agic-0.9.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/sqlite-jdbc-3.34.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/tritonus-share-0.3.7-1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/Music_jar/Music.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/About.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/ClearTerminal.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/CreateList$CheckExistsName.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/CreateList$SaveNew.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/CreateList.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/CreateOption.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Database/Database$Query.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Database/Database.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Database/Db$Callback.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Database/Db.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Database/InfoDb$DFile$Last.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Database/InfoDb$DFile$ListMusic.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Database/InfoDb$DFile$NameListMusic.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Database/InfoDb$DFile.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Database/InfoDb$PublicRow.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Database/InfoDb.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/FindAllFile$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/FindAllFile$CallBack.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/FindAllFile$ERROR.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/FindAllFile$Find.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/FindAllFile.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/GetNumber.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Interface/bardiademon.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Last$1GetLastList.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Last$1GetLastMusic.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Last.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Mp3Info.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Music.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/OpenMusic$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/OpenMusic$GetLastChooserFile.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/OpenMusic.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Other/GetInput.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Other/Str.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/Progress.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/YourList$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/YourList$DeleteList.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/YourList$GetAllNameList$YList.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/YourList$GetAllNameList.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/YourList$GetList.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Music/bardiademon/Music/YourList.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/About.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/ClearTerminal.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/CreateList.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/CreateOption.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/Database/Database.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/Database/Db.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/Database/InfoDb.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/FindAllFile.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/GetNumber.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/Interface/bardiademon.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/Last.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/Mp3Info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/Music.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/OpenMusic.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/Other/GetInput.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/Other/Str.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/Progress.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bardiademon/Music/YourList.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/PlayerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/PlayerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/TerminalMusicController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/TerminalMusicController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,23 +51,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.MusicTerminalApplication.executor": "Run",
-    "Application.Pagination.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/Programming/git/terminal-music/src/main/resources/patch",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "run.code.analysis.last.selected.profile": "pProject Default"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MusicTerminalApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Pagination.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Programming/git/terminal-music/src/main/resources/patch&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Programming\git\terminal-music\src\main\resources\patch" />

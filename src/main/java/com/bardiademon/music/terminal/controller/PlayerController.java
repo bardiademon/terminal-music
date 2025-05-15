@@ -5,10 +5,11 @@ import uk.co.caprica.vlcj.media.MediaRef;
 import uk.co.caprica.vlcj.media.TrackType;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventListener;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 public class PlayerController implements MediaPlayerEventListener {
 
-    private MediaPlayer mediaPlayer;
+    private EmbeddedMediaPlayer mediaPlayer;
 
     private PlayerListener playerListener;
 
@@ -21,17 +22,15 @@ public class PlayerController implements MediaPlayerEventListener {
     }
 
     private void initial() {
-
-        if (mediaPlayer != null) {
+        if (mediaPlayer != null && !isFinished) {
             mediaPlayer.controls().stop();
-            mediaPlayer.events().removeMediaPlayerEventListener(this);
         }
-
-        mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
+        mediaPlayer = new MediaPlayerFactory().mediaPlayers().newEmbeddedMediaPlayer();
         mediaPlayer.events().addMediaPlayerEventListener(this);
 
         isPlay = false;
         isPause = false;
+        isStop = false;
         isFinished = false;
     }
 
@@ -41,8 +40,7 @@ public class PlayerController implements MediaPlayerEventListener {
 
     public void play(String path) {
         initial();
-        mediaPlayer.media().play(path);
-
+        mediaPlayer.media().start(path);
         isPlay = true;
         isPause = false;
         isStop = false;
@@ -123,6 +121,7 @@ public class PlayerController implements MediaPlayerEventListener {
     public void stopped(MediaPlayer mediaPlayer) {
         isPause = false;
         isStop = true;
+        isPlay = false;
     }
 
     @Override
@@ -139,6 +138,7 @@ public class PlayerController implements MediaPlayerEventListener {
     public void finished(MediaPlayer mediaPlayer) {
         isFinished = true;
         isPause = false;
+        isPlay = false;
         playerListener.onFinished();
     }
 
