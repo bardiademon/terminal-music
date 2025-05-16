@@ -115,7 +115,6 @@
                 <version>${maven.resources.version}</version>
                 <configuration>
                     <nonFilteredFileExtensions>
-                        <nonFilteredFileExtension>sqlite3</nonFilteredFileExtension>
                         <nonFilteredFileExtension>sql</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
