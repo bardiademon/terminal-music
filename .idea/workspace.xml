@@ -6,9 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="0ab22986-1609-4dea-90d3-40377c4b5932" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/MusicTerminalApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/MusicTerminalApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/PlayerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/PlayerController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/TerminalMusicController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/TerminalMusicController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/service/MusicService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/service/MusicService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/view/MenuView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/view/MenuView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,8 +22,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -48,6 +52,9 @@
   &quot;associatedIndex&quot;: 2
 }</component>
   <component name="ProjectId" id="1qDRxV4hY1hws5DYuQyy1lLogBE" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -67,7 +74,8 @@
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "run.code.analysis.last.selected.profile": "pProject Default"
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>
   <component name="RecentsManager">

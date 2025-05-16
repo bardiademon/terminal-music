@@ -1,8 +1,9 @@
 # 🎵 Terminal Music Player
 
 <div style="display:inline-block;">
-  <img src="screenshots/2.png" width="400" height="380" alt="Screenshot2" />
-  <img src="screenshots/1.png" width="400" height="380" alt="Screenshot1" />
+  <img src="screenshots/1.png" width="600" height="380" alt="Screenshot2" />
+  <img src="screenshots/2.png" width="600" height="500" alt="Screenshot1" />
+  <img src="screenshots/3.png" width="600" height="500" alt="Screenshot1" />
 </div>
 
 This project is a **terminal-based music player** that runs entirely in the terminal and supports playing various audio file formats.
@@ -43,11 +44,14 @@ Follow these steps to set up and run the application:
    cd target
    ```
 
-9. Run the application:
+9. Set UTF-8 encoding for Windows:
+   ```shell
+   $OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new()
+   ```
+10. Run the application:
    ```bash
    java -jar terminal-music-[version].jar
    ```
-
 ---
 
 ## 🚀 Features

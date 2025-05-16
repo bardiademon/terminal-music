@@ -25,12 +25,17 @@ public class PlayerController implements MediaPlayerEventListener {
     private boolean isStop = false;
     private boolean isFinished = false;
 
-    private static final int PROGRESS_TOTAL_LEN = 20;
+    private static final String[] VOLUME_CHAR = {"▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"};
 
     public PlayerController() {
     }
 
     private void initial() {
+
+        if (mediaPlayer != null && mediaPlayer.status().isPlaying()) {
+            mediaPlayer.controls().stop();
+        }
+
         mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
         mediaPlayer.events().addMediaPlayerEventListener(this);
 
@@ -66,16 +71,16 @@ public class PlayerController implements MediaPlayerEventListener {
             String description = mediaPlayer.media().meta().get(Meta.DESCRIPTION);
             return String.format("""
                             ~*~*~*~*~*~*~*~*~*~*~*~*~
-                            [Title] -------- %s
-                            [Artist] ------- %s
-                            [Album] -------- %s
-                            [Genre] -------- %s
-                            [Date] --------- %s
-                            [Description] -- %s
+                            🎵 [Title] -------- %s
+                            👤 [Artist] ------- %s
+                            💿 [Album] -------- %s
+                            🎼 [Genre] -------- %s
+                            📅 [Date] --------- %s
+                            📝 [Description] -- %s
                             ~*~*~*~*~*~*~*~*~*~*~*~*~""",
                     safeFormat(title), safeFormat(artist), safeFormat(album), safeFormat(genre), safeFormat(date), safeFormat(description));
         } catch (Exception e) {
-            return "Title:\nArtist:\nAlbum:\nGenre:\nData:\nDescription:";
+            return "🎵 Title:\n👤 Artist:\n💿 Album:\n🎼 Genre:\n📅 Data:\n📝 Description:";
         }
     }
 
@@ -83,15 +88,34 @@ public class PlayerController implements MediaPlayerEventListener {
         return value == null ? "-" : value;
     }
 
-    public String generateProgress() {
+    public String generateSeek(int value, int percent, int seekTotal, String filledChar, String emptyChar) {
         if (mediaPlayer == null) {
             return "";
         }
-        int filledLength = Math.round(mediaPlayer.status().position() * PROGRESS_TOTAL_LEN);
-        int emptyLength = PROGRESS_TOTAL_LEN - filledLength;
-        String filled = "▓".repeat(filledLength);
+        int filledLength = Math.round((value / ((float) percent)) * seekTotal);
+        int emptyLength = seekTotal - filledLength;
+        String filled = filledChar.repeat(filledLength);
+        String empty = emptyChar.repeat(emptyLength);
+        return filled + empty;
+    }
+
+    public String generateVolumeSeek() {
+        if (mediaPlayer == null) {
+            return "";
+        }
+        int seekLen = VOLUME_CHAR.length;
+        int filledLength = Math.round((getVolume() / ((float) 200)) * seekLen);
+        int emptyLength = seekLen - filledLength;
+        StringBuilder filled = new StringBuilder();
+        for (int i = 0; i < filledLength; i++) {
+            filled.append(VOLUME_CHAR[i]);
+        }
         String empty = "░".repeat(emptyLength);
         return filled + empty;
+    }
+
+    public String generatePositionSeek() {
+        return generateSeek(getPosition(), 100, 20, "▓", "░");
     }
 
     public void printImage() {
@@ -126,6 +150,38 @@ public class PlayerController implements MediaPlayerEventListener {
         return mediaPlayer;
     }
 
+    public boolean isMute() {
+        return mediaPlayer != null && mediaPlayer.audio() != null && mediaPlayer.audio().isMute();
+    }
+
+    public int getVolume() {
+        if (mediaPlayer != null && mediaPlayer.audio() != null) {
+            return mediaPlayer.audio().volume();
+        }
+        return -1;
+    }
+
+    public void setPosition(int position) {
+        if (position < 0 || position > 100) {
+            return;
+        }
+        if (mediaPlayer != null && mediaPlayer.controls() != null) {
+            mediaPlayer.controls().setPosition(position / 100F);
+        }
+    }
+
+    public void setVolume(int volume) {
+        if (mediaPlayer != null && mediaPlayer.audio() != null) {
+            mediaPlayer.audio().setVolume(volume);
+        }
+    }
+
+    public void setMute() {
+        if (mediaPlayer != null && mediaPlayer.audio() != null) {
+            mediaPlayer.audio().setMute(!mediaPlayer.audio().isMute());
+        }
+    }
+
     public boolean isPlaying() {
         return mediaPlayer != null && mediaPlayer.status() != null && mediaPlayer.status().isPlaying();
     }
@@ -139,7 +195,9 @@ public class PlayerController implements MediaPlayerEventListener {
     public void stop() {
         isPlay = false;
         isPause = false;
-        mediaPlayer.controls().stop();
+        if (mediaPlayer.status().isPlaying()) {
+            mediaPlayer.controls().stop();
+        }
     }
 
     public long getTime() {
@@ -150,8 +208,8 @@ public class PlayerController implements MediaPlayerEventListener {
         return mediaPlayer.status().length();
     }
 
-    public int getProgress() {
-        return (int) (mediaPlayer.status().position() * 100);
+    public int getPosition() {
+        return Math.round(mediaPlayer.status().position() * 100);
     }
 
     public void setRepeat() {
@@ -159,7 +217,7 @@ public class PlayerController implements MediaPlayerEventListener {
     }
 
     public boolean isRepeat() {
-        return mediaPlayer.controls().getRepeat();
+        return mediaPlayer != null && mediaPlayer.controls() != null && mediaPlayer.controls().getRepeat();
     }
 
     public boolean isPlay() {

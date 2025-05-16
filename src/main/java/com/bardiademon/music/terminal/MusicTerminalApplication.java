@@ -8,6 +8,8 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,9 +20,9 @@ public class MusicTerminalApplication extends AbstractVerticle {
     private static Vertx vertx;
 
     public static void main(String[] args) {
-        Logger.getLogger("com.mchange.v2").setLevel(Level.OFF);
+        System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
+        Logger.getLogger("com").setLevel(Level.OFF);
 
-        System.out.println("bardiademon");
         app = new MusicTerminalApplication();
         addShutdownHook("Close app", app::closeApp);
 
@@ -28,7 +30,6 @@ public class MusicTerminalApplication extends AbstractVerticle {
                 .setWorkerPoolSize(40)
                 .setMaxEventLoopExecuteTime(10000000L)
                 .setBlockedThreadCheckInterval(10000000000L);
-        ;
 
         Vertx.vertx(vertxOptions).deployVerticle(app);
     }

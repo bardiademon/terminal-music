@@ -23,10 +23,17 @@ public class MenuView {
     }
 
     public static <T> void showMenu(MenuModel<T> menu, boolean clear) {
+
+        if (readingLine) {
+            return;
+        }
+
         MusicTerminalApplication.getAppVertx().executeBlocking(() -> {
             if (clear) {
                 clearConsole();
+                System.out.println("bardiademon");
             }
+
             System.out.printf("Menu %s, For exit app -> :exit\n", menu.name());
 
             if (menu.numberInputTitles() != null) {

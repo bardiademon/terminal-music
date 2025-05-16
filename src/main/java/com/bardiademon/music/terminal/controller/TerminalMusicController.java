@@ -47,11 +47,7 @@ public class TerminalMusicController {
             @Override
             public void onFinished() {
                 if (nextMusic != null) {
-                    nextMusic.apply(null);
-                    if (showPlayMusicTime) {
-                        MenuView.clearConsole();
-                        showPlayMusicTimeClearConsole = true;
-                    }
+                    nextOrPreMusic(nextMusic);
                 }
             }
 
@@ -63,10 +59,11 @@ public class TerminalMusicController {
                         player.printImage();
                         System.out.println(player.getMeta());
                     }
-                    System.out.printf("\r%s %s %s",
+                    System.out.printf("\r⏱️ %s ▶️ %s %s / \uD83D\uDD0A %s %d%%",
                             DurationUtil.formatDuration(Duration.ofMillis(player.getTime())),
-                            player.generateProgress(),
-                            DurationUtil.formatDuration(Duration.ofMillis(player.getLength()))
+                            player.generatePositionSeek(),
+                            DurationUtil.formatDuration(Duration.ofMillis(player.getLength())),
+                            player.generateVolumeSeek(), player.getVolume()
                     );
                 }
             }
@@ -407,7 +404,7 @@ public class TerminalMusicController {
     }
 
     private MenuTitleModel<Void> getMenuTitleBackToMenu() {
-        return MenuTitleModel.createVoid(" Main Menu", unused -> {
+        return MenuTitleModel.createVoid("Main Menu", unused -> {
             mainMenu();
             return null;
         });
@@ -672,62 +669,160 @@ public class TerminalMusicController {
             return;
         }
 
-        List<MenuTitleModel<Void>> menuPlayMusicTitles = new ArrayList<>();
+        new Thread(() -> {
 
-        if (start && !quickStart) {
-            menuPlayMusicTitles.add(MenuTitleModel.createVoid("Start", unused -> {
-                player.play(playedMusic.getPath());
-                playMusic(playedMusic, false, false, nextMusic, preMusic);
-                return null;
-            }));
-        } else {
-            menuPlayMusicTitles.add(MenuTitleModel.createVoid(player.isPause() ? "Resume" : "Pause", unused -> {
-                player.pause();
-                playMusic(playedMusic, false, false, nextMusic, preMusic);
-                return null;
-            }));
-        }
-        menuPlayMusicTitles.add(MenuTitleModel.createVoid("Stop", unused -> {
-            player.stop();
-            playMusic(playedMusic, true, false, nextMusic, preMusic);
-            return null;
-        }));
-        menuPlayMusicTitles.add(MenuTitleModel.createVoid("Repeat [" + (player.isRepeat() ? "on" : "off") + "]", unused -> {
-            player.setRepeat();
-            playMusic(playedMusic, false, false, nextMusic, preMusic);
-            return null;
-        }));
-        menuPlayMusicTitles.add(MenuTitleModel.createVoid("Details", unused -> {
-            if (player.isPlaying()) {
-                MenuView.clearConsole();
-                showPlayMusicTimeClearConsole = true;
-                showPlayMusicTime = true;
-                MenuView.readLine();
-                showPlayMusicTime = false;
+            sleep(50);
+
+            List<MenuTitleModel<Void>> menuPlayMusicTitles = new ArrayList<>();
+
+            if (start && !quickStart) {
+                menuPlayMusicTitles.add(MenuTitleModel.createVoid("▶️ Play", unused -> {
+                    player.play(playedMusic.getPath());
+                    playMusic(playedMusic, false, false, nextMusic, preMusic);
+                    return null;
+                }));
+            } else {
+                menuPlayMusicTitles.add(MenuTitleModel.createVoid(player.isPause() ? "▶️ Resume" : "⏸️ Pause", unused -> {
+                    player.pause();
+                    playMusic(playedMusic, false, false, nextMusic, preMusic);
+                    return null;
+                }));
             }
-            playMusic(playedMusic, false, false, nextMusic, preMusic);
-            return null;
-        }));
-        menuPlayMusicTitles.add(MenuTitleModel.createVoid("Shuffle [" + (shuffle ? "on" : "off") + "]", unused -> {
-            shuffle = !shuffle;
-            playMusic(playedMusic, false, false, nextMusic, preMusic);
-            return null;
-        }));
-        if (nextMusic != null) {
-            menuPlayMusicTitles.add(MenuTitleModel.createVoid("Next", unused -> {
-                nextMusic.apply(null);
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid("⏹️ Stop", unused -> {
+                player.stop();
+                playMusic(playedMusic, true, false, nextMusic, preMusic);
                 return null;
             }));
-        }
-        if (preMusic != null) {
-            menuPlayMusicTitles.add(MenuTitleModel.createVoid("Pre", unused -> {
-                preMusic.apply(null);
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔁 Repeat [" + (player.isRepeat() ? "on" : "off") + "]", unused -> {
+                player.setRepeat();
+                playMusic(playedMusic, false, false, nextMusic, preMusic);
                 return null;
             }));
-        }
-        menuPlayMusicTitles.add(getMenuTitleBackToMenu());
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid("ℹ️ Details", unused -> {
+                if (player.isPlaying()) {
+                    MenuView.clearConsole();
+                    showPlayMusicTimeClearConsole = true;
+                    showPlayMusicTime = true;
+                    MenuView.readLine();
+                    showPlayMusicTime = false;
+                }
+                playMusic(playedMusic, false, false, nextMusic, preMusic);
+                return null;
+            }));
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔊 Volume [" + player.getVolume() + "]", unused -> {
+                playedMusicVolume();
+                return null;
+            }));
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid("⏩ Seek [" + player.getPosition() + "]", unused -> {
+                playedMusicSeek();
+                return null;
+            }));
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔇 Mute [" + boolToOnOff(player.isMute()) + "]", unused -> {
+                player.setMute();
+                playMusic(playedMusic, false, false, nextMusic, preMusic);
+                return null;
+            }));
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔀 Shuffle [" + boolToOnOff(shuffle) + "]", unused -> {
+                shuffle = !shuffle;
+                playMusic(playedMusic, false, false, nextMusic, preMusic);
+                return null;
+            }));
+            if (!player.isRepeat() && nextMusic != null) {
+                menuPlayMusicTitles.add(MenuTitleModel.createVoid("⏭️ Next", unused -> {
+                    nextOrPreMusic(nextMusic);
+                    return null;
+                }));
+            }
+            if (!player.isRepeat() && preMusic != null) {
+                menuPlayMusicTitles.add(MenuTitleModel.createVoid("⏮️ Pre", unused -> {
+                    nextOrPreMusic(preMusic);
+                    return null;
+                }));
+            }
+            menuPlayMusicTitles.add(getMenuTitleBackToMenu());
 
-        MenuView.showMenu(MenuModel.numberInput("Music " + FilenameUtils.getName(music.getPath()), menuPlayMusicTitles));
+            MenuView.showMenu(MenuModel.numberInput("Music " + FilenameUtils.getName(music.getPath()), menuPlayMusicTitles));
+
+        }).start();
+    }
+
+    private String boolToOnOff(boolean val) {
+        return val ? "on" : "off";
+    }
+
+    private void playedMusicVolume() {
+        MenuTitleModel<Integer> getVolumeTitle = new MenuTitleModel<>("Volume [%s] (0-200) (Back: enter)".formatted(player.generateVolumeSeek()), volume -> {
+            if (volume == null) {
+                return null;
+            }
+            if (volume < 0 || volume > 200) {
+                System.out.println("Invalid volume");
+            } else {
+                player.setVolume(volume);
+                sleep(50);
+            }
+            playedMusicVolume();
+            return null;
+        }, inputStrVolume -> {
+            if (inputStrVolume == null || inputStrVolume.trim().isEmpty()) {
+                playMusic(playedMusic, !player.isPlaying(), false, nextMusic, preMusic);
+                return null;
+            }
+            try {
+                return Integer.parseInt(inputStrVolume);
+            } catch (Exception e) {
+                return player.getVolume();
+            }
+        });
+        MenuView.showMenu(MenuModel.inputMessage("Volume " + FilenameUtils.getName(playedMusic.getPath()), getVolumeTitle));
+    }
+
+    private void playedMusicSeek() {
+        MenuTitleModel<Integer> getVolumeTitle = new MenuTitleModel<>("Seek [%s] (0-100) (Back: enter)".formatted(player.generatePositionSeek()), position -> {
+            if (position == null) {
+                return null;
+            }
+            if (position < 0 || position > 100) {
+                System.out.println("Invalid position");
+            } else {
+                player.setPosition(position);
+                sleep(50);
+            }
+            playedMusicSeek();
+            return null;
+        }, inputStrPosition -> {
+            if (inputStrPosition == null || inputStrPosition.trim().isEmpty()) {
+                playMusic(playedMusic, !player.isPlaying(), false, nextMusic, preMusic);
+                return null;
+            }
+            try {
+                return Integer.parseInt(inputStrPosition);
+            } catch (Exception e) {
+                return player.getPosition();
+            }
+        });
+        MenuView.showMenu(MenuModel.inputMessage("Position " + FilenameUtils.getName(playedMusic.getPath()), getVolumeTitle));
+    }
+
+    private static void nextOrPreMusic(Function<Void, Void> function) {
+        if (player.isRepeat()) {
+            return;
+        }
+        player.stop();
+        if (function != null) {
+            function.apply(null);
+        }
+        if (showPlayMusicTime) {
+            MenuView.clearConsole();
+            showPlayMusicTimeClearConsole = true;
+        }
+    }
+
+    private void sleep(long mills) {
+        try {
+            Thread.sleep(mills);
+        } catch (InterruptedException ignored) {
+        }
     }
 
 }
