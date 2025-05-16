@@ -2,14 +2,11 @@ package com.bardiademon.music.terminal;
 
 import com.bardiademon.music.terminal.controller.DatabaseConnection;
 import com.bardiademon.music.terminal.controller.TerminalMusicController;
-import com.bardiademon.music.terminal.utils.Paths;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,15 +34,8 @@ public class MusicTerminalApplication extends AbstractVerticle {
     }
 
     @Override
-    public void start(Promise<Void> startPromise) throws Exception {
-
+    public void start(Promise<Void> startPromise) {
         MusicTerminalApplication.vertx = super.vertx;
-
-        File dbDataPath = new File(Paths.DATA_PATH);
-        if (!dbDataPath.exists() && !dbDataPath.mkdirs()) {
-            throw new FileNotFoundException(dbDataPath.getAbsolutePath());
-        }
-
         DatabaseConnection.connect(vertx).onSuccess(successConnection -> {
             new TerminalMusicController();
             startPromise.complete();
@@ -53,7 +43,6 @@ public class MusicTerminalApplication extends AbstractVerticle {
             startPromise.fail(failedConnection);
             closeApp();
         });
-
     }
 
     public static InputStream getResource(String path) {

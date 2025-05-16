@@ -19,8 +19,8 @@ public final class MusicMapper {
         MusicEntity music = new MusicEntity();
         music.setId(row.getInteger("id"));
         music.setPath(row.getString("path"));
-        music.setFavorite(Mapper.getNullableValue("favorite", row, Integer.class, 0) == 1);
-        music.setLastPlay(Mapper.getNullableValue("last_play", row, Integer.class, 0) == 1);
+        music.setFavorite(Mapper.getNullableValue("favorite", row, Boolean.class, false));
+        music.setLastPlay(Mapper.getNullableValue("last_play", row, Boolean.class, false));
         music.setLastPlayAt(Mapper.toLocalDateTime("last_play_at", row));
         music.setCreatedAt(Mapper.toLocalDateTime("created_at", row));
         return music;

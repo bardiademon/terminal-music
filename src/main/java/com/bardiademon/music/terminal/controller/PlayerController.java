@@ -2,14 +2,21 @@ package com.bardiademon.music.terminal.controller;
 
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.media.MediaRef;
+import uk.co.caprica.vlcj.media.Meta;
 import uk.co.caprica.vlcj.media.TrackType;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventListener;
-import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.URI;
+import java.nio.file.Path;
 
 public class PlayerController implements MediaPlayerEventListener {
 
-    private EmbeddedMediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
 
     private PlayerListener playerListener;
 
@@ -18,6 +25,8 @@ public class PlayerController implements MediaPlayerEventListener {
     private boolean isStop = false;
     private boolean isFinished = false;
 
+    private static final int PROGRESS_TOTAL_LEN = 20;
+
     public PlayerController() {
     }
 
@@ -25,7 +34,7 @@ public class PlayerController implements MediaPlayerEventListener {
         if (mediaPlayer != null && !isFinished) {
             mediaPlayer.controls().stop();
         }
-        mediaPlayer = new MediaPlayerFactory().mediaPlayers().newEmbeddedMediaPlayer();
+        mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
         mediaPlayer.events().addMediaPlayerEventListener(this);
 
         isPlay = false;
@@ -40,11 +49,88 @@ public class PlayerController implements MediaPlayerEventListener {
 
     public void play(String path) {
         initial();
-        mediaPlayer.media().start(path);
+        mediaPlayer.media().start(new File(path).toPath().toUri().toString());
         isPlay = true;
         isPause = false;
         isStop = false;
         isFinished = false;
+    }
+
+    public String getMeta() {
+        try {
+            if (mediaPlayer == null) {
+                throw new NullPointerException();
+            }
+            String title = mediaPlayer.media().meta().get(Meta.TITLE);
+            String artist = mediaPlayer.media().meta().get(Meta.ARTIST);
+            String album = mediaPlayer.media().meta().get(Meta.ALBUM);
+            String genre = mediaPlayer.media().meta().get(Meta.GENRE);
+            String date = mediaPlayer.media().meta().get(Meta.DATE);
+            String description = mediaPlayer.media().meta().get(Meta.DESCRIPTION);
+            return String.format("""
+                            ~*~*~*~*~*~*~*~*~*~*~*~*~
+                            [Title] -------  %s
+                            [Artist] ------  %s
+                            [Album] -------  %s
+                            [Genre] -------  %s
+                            [Date] --------  %s
+                            [Description] -- %s
+                            ~*~*~*~*~*~*~*~*~*~*~*~*~""",
+                    safeFormat(title), safeFormat(artist), safeFormat(album), safeFormat(genre), safeFormat(date), safeFormat(description));
+        } catch (Exception e) {
+            return "Title:\nArtist:\nAlbum:\nGenre:\nData:\nDescription:";
+        }
+    }
+
+    private String safeFormat(String value) {
+        return value == null ? "-" : value;
+    }
+
+    public String generateProgress() {
+        if (mediaPlayer == null) {
+            return "";
+        }
+        int filledLength = Math.round(mediaPlayer.status().position() * PROGRESS_TOTAL_LEN);
+        int emptyLength = PROGRESS_TOTAL_LEN - filledLength;
+        String filled = "▓".repeat(filledLength);
+        String empty = "░".repeat(emptyLength);
+        return filled + empty;
+    }
+
+    public void printImage() {
+        if (mediaPlayer == null) {
+            return;
+        }
+        try {
+            String path = mediaPlayer.media().meta().get(Meta.ARTWORK_URL);
+            BufferedImage image = ImageIO.read(Path.of(URI.create(path)).toFile());
+            int width = 80;
+            int height = image.getHeight() * width / image.getWidth() / 2;  // حفظ نسبت ابعاد
+            Image scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+            Graphics2D g = resized.createGraphics();
+            g.drawImage(scaledImage, 0, 0, null);
+            g.dispose();
+            String shades = "@#&$%*o!;:. ";
+            for (int y = 0; y < height; y++) {
+                StringBuilder row = new StringBuilder();
+                for (int x = 0; x < width; x++) {
+                    int color = resized.getRGB(x, y) & 0xFF;
+                    int index = (color * (shades.length() - 1)) / 255;
+                    row.append(shades.charAt(index));
+                }
+                System.out.println(row);
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
+    public boolean isPlaying() {
+        return mediaPlayer != null && mediaPlayer.status() != null && mediaPlayer.status().isPlaying();
     }
 
     public void pause() {

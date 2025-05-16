@@ -53,10 +53,10 @@ public class TerminalMusicController {
             @Override
             public void onTime(long time) {
                 if (showPlayMusicTime) {
-                    System.out.printf("\r%s / %s / %s",
+                    System.out.printf("\r%s %s %s",
                             DurationUtil.formatDuration(Duration.ofMillis(player.getTime())),
-                            DurationUtil.formatDuration(Duration.ofMillis(player.getLength())),
-                            FilenameUtils.getName(playedMusic.getPath())
+                            player.generateProgress(),
+                            DurationUtil.formatDuration(Duration.ofMillis(player.getLength()))
                     );
                 }
             }
@@ -98,8 +98,8 @@ public class TerminalMusicController {
             return null;
         }));
 
-        if (player.isPlay()) {
-            titles.add(MenuTitleModel.createVoid("Music control", unused -> {
+        if (player.isPlaying()) {
+            titles.add(MenuTitleModel.createVoid("Music Controls", unused -> {
                 playMusic(playedMusic, false, false, nextMusic, preMusic);
                 return null;
             }));
@@ -434,7 +434,7 @@ public class TerminalMusicController {
             MusicService.repository().setFavorite(music.getId(), !music.isFavorite())
                     .compose(v -> MusicService.repository().fetchMusicById(music.getId()))
                     .onSuccess(musicEntity -> {
-                        System.out.println("Success delete music, Music: " + music.getPath());
+                        System.out.println("Success " + (music.isFavorite() ? "Delete " : "Add") + " favorite music, Music: " + music.getPath());
                         selectMusic(musicEntity);
                     })
                     .onFailure(failedDelete -> {
@@ -445,7 +445,6 @@ public class TerminalMusicController {
         }));
         titles.add(MenuTitleModel.createVoid("Delete", unused -> {
             PlayListService.repository().deleteMusic(music.getId())
-                    .compose(v -> MusicService.repository().deleteMusic(music.getId()))
                     .onSuccess(deletedMusic -> {
                         System.out.println("Success delete music, Music: " + music.getPath());
                         listMusic(0);
@@ -641,6 +640,13 @@ public class TerminalMusicController {
     }
 
     private void playMusic(MusicEntity music, boolean start, boolean quickStart, Function<Void, Void> next, Function<Void, Void> pre) {
+
+        if (music == null) {
+            System.out.println("Music is null");
+            next.apply(null);
+            return;
+        }
+
         nextMusic = next;
         preMusic = pre;
         playedMusic = music;
@@ -680,13 +686,11 @@ public class TerminalMusicController {
             playMusic(playedMusic, false, false, nextMusic, preMusic);
             return null;
         }));
-        menuPlayMusicTitles.add(MenuTitleModel.createVoid("Show info", unused -> {
-            playMusic(playedMusic, false, false, nextMusic, preMusic);
-            return null;
-        }));
-        menuPlayMusicTitles.add(MenuTitleModel.createVoid("Process", unused -> {
-            if (player.isPlay()) {
+        menuPlayMusicTitles.add(MenuTitleModel.createVoid("Details", unused -> {
+            if (player.isPlaying()) {
                 showPlayMusicTime = true;
+                player.printImage();
+                System.out.println(player.getMeta());
                 MenuView.readLine();
                 showPlayMusicTime = false;
             }
