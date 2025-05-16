@@ -302,7 +302,7 @@ public final class MusicService implements MusicRepository {
                 order by `id` asc
                     limit ? offset ?
                 """
-                .replace("::SEP::", File.separator);
+                .replace("::SEP::", (File.separator.equals("\\") ? File.separator + "\\" : File.separator));
 
         JsonArray params = new JsonArray()
                 .add(String.format("%%%s%%", path))
@@ -330,7 +330,7 @@ public final class MusicService implements MusicRepository {
                     where `path` is not null
                        and substr(`path`, length(`path`) - instr(reverse(`path`), '::SEP::') + length('::SEP::') + 1) like ?
                 """
-                .replace("::SEP::", File.separator);
+                .replace("::SEP::", (File.separator.equals("\\") ? File.separator + "\\" : File.separator));
 
         JsonArray params = new JsonArray()
                 .add(String.format("%%%s%%", path));

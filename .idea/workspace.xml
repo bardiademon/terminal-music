@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ab22986-1609-4dea-90d3-40377c4b5932" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/PlayerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/PlayerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/TerminalMusicController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/TerminalMusicController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/service/MusicService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/service/MusicService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +63,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/Programming/git/terminal-music/src/main/resources/patch",
+    "last_opened_file_path": "D:/Programming/git/terminal-music/screenshots",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
@@ -72,11 +72,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Programming\git\terminal-music\screenshots" />
       <recent name="D:\Programming\git\terminal-music\src\main\resources\patch" />
       <recent name="D:\Programming\git\terminal-music" />
       <recent name="D:\Programming\git\terminal-music\src\com\bardiademon\music\terminal" />
       <recent name="D:\Programming\project\java\1\Music\lib" />
-      <recent name="D:\Programming\project\java\1\Music" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Programming\git\terminal-music\src\main\resources" />

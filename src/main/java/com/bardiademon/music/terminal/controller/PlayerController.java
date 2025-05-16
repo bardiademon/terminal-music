@@ -31,9 +31,6 @@ public class PlayerController implements MediaPlayerEventListener {
     }
 
     private void initial() {
-        if (mediaPlayer != null && !isFinished) {
-            mediaPlayer.controls().stop();
-        }
         mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
         mediaPlayer.events().addMediaPlayerEventListener(this);
 
@@ -69,11 +66,11 @@ public class PlayerController implements MediaPlayerEventListener {
             String description = mediaPlayer.media().meta().get(Meta.DESCRIPTION);
             return String.format("""
                             ~*~*~*~*~*~*~*~*~*~*~*~*~
-                            [Title] -------  %s
-                            [Artist] ------  %s
-                            [Album] -------  %s
-                            [Genre] -------  %s
-                            [Date] --------  %s
+                            [Title] -------- %s
+                            [Artist] ------- %s
+                            [Album] -------- %s
+                            [Genre] -------- %s
+                            [Date] --------- %s
                             [Description] -- %s
                             ~*~*~*~*~*~*~*~*~*~*~*~*~""",
                     safeFormat(title), safeFormat(artist), safeFormat(album), safeFormat(genre), safeFormat(date), safeFormat(description));
@@ -105,7 +102,7 @@ public class PlayerController implements MediaPlayerEventListener {
             String path = mediaPlayer.media().meta().get(Meta.ARTWORK_URL);
             BufferedImage image = ImageIO.read(Path.of(URI.create(path)).toFile());
             int width = 80;
-            int height = image.getHeight() * width / image.getWidth() / 2;  // حفظ نسبت ابعاد
+            int height = image.getHeight() * width / image.getWidth() / 2;
             Image scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
             BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
             Graphics2D g = resized.createGraphics();

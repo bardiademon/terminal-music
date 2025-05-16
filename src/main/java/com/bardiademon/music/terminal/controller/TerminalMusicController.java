@@ -37,6 +37,7 @@ public class TerminalMusicController {
     private static Function<Void, Void> preMusic = null;
     private static MusicEntity playedMusic = null;
     private static boolean showPlayMusicTime = false;
+    private static boolean showPlayMusicTimeClearConsole = false;
     private static final List<Integer> playingMusicIndex = new ArrayList<>();
     private static boolean shuffle = false;
     private static final Random random = new Random();
@@ -47,12 +48,21 @@ public class TerminalMusicController {
             public void onFinished() {
                 if (nextMusic != null) {
                     nextMusic.apply(null);
+                    if (showPlayMusicTime) {
+                        MenuView.clearConsole();
+                        showPlayMusicTimeClearConsole = true;
+                    }
                 }
             }
 
             @Override
             public void onTime(long time) {
                 if (showPlayMusicTime) {
+                    if (showPlayMusicTimeClearConsole) {
+                        showPlayMusicTimeClearConsole = false;
+                        player.printImage();
+                        System.out.println(player.getMeta());
+                    }
                     System.out.printf("\r%s %s %s",
                             DurationUtil.formatDuration(Duration.ofMillis(player.getTime())),
                             player.generateProgress(),
@@ -115,10 +125,11 @@ public class TerminalMusicController {
     private void searchMusic() {
         MenuTitleModel<String> searchMusicTitle = MenuTitleModel.createString("Enter music name", name -> {
 
-            if (name != null && name.isEmpty()) {
-                searchMusic();
+            if (name == null || name.isEmpty()) {
+                mainMenu();
                 return null;
             }
+
             searchMusic(name, LIMIT_FETCH_MUSIC, 0);
             return null;
         });
@@ -688,9 +699,9 @@ public class TerminalMusicController {
         }));
         menuPlayMusicTitles.add(MenuTitleModel.createVoid("Details", unused -> {
             if (player.isPlaying()) {
+                MenuView.clearConsole();
+                showPlayMusicTimeClearConsole = true;
                 showPlayMusicTime = true;
-                player.printImage();
-                System.out.println(player.getMeta());
                 MenuView.readLine();
                 showPlayMusicTime = false;
             }
