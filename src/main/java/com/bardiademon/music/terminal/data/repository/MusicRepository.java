@@ -29,6 +29,8 @@ public interface MusicRepository {
 
     Future<List<MusicEntity>> fetchMusicByPlayList(int playListId, int limit, int offset);
 
+    Future<List<MusicEntity>> fetchAllMusicByPlayList(int playListId);
+
     Future<Integer> fetchTotalMusicByPlayList(int playListId);
 
     Future<List<MusicEntity>> fetchMusic(int limit, int offset);

@@ -21,7 +21,6 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class TerminalMusicController {
@@ -30,7 +29,7 @@ public class TerminalMusicController {
 
     private static final String KEY_CD_PATH = "!c", KEY_SELECT_PATH = "!s", KEY_BACK_MAIN_MENU = "!b";
 
-    private static final int LIMIT_FETCH_MUSIC = 20;
+    private static final int LIMIT_FETCH_MUSIC = 25;
 
     private static final PlayerController player = new PlayerController();
     private static Function<Void, Void> nextMusic = null;
@@ -38,7 +37,6 @@ public class TerminalMusicController {
     private static MusicEntity playedMusic = null;
     private static boolean showPlayMusicTime = false;
     private static boolean showPlayMusicTimeClearConsole = false;
-    private static final List<Integer> playingMusicIndex = new ArrayList<>();
     private static boolean shuffle = false;
     private static final Random random = new Random();
 
@@ -59,7 +57,7 @@ public class TerminalMusicController {
                         player.printImage();
                         System.out.println(player.getMeta());
                     }
-                    System.out.printf("\r⏱️ %s ▶️ %s %s / \uD83D\uDD0A %s %d%%",
+                    System.out.printf("\r⏱️ %s ▶️ %s %s / 🔊 %s %d%%",
                             DurationUtil.formatDuration(Duration.ofMillis(player.getTime())),
                             player.generatePositionSeek(),
                             DurationUtil.formatDuration(Duration.ofMillis(player.getLength())),
@@ -73,31 +71,31 @@ public class TerminalMusicController {
     private MenuModel<Integer> getMainMenu() {
         List<MenuTitleModel<Void>> titles = new ArrayList<>();
 
-        titles.add(MenuTitleModel.createVoid("Play last music", unused -> {
+        titles.add(MenuTitleModel.createVoid("⏯️ Play last music", unused -> {
             TerminalMusicController.this.playLastMusic();
             return null;
         }));
-        titles.add(MenuTitleModel.createVoid("Add musics", unused -> {
+        titles.add(MenuTitleModel.createVoid("➕ Add musics", unused -> {
             TerminalMusicController.this.addMusics();
             return null;
         }));
-        titles.add(MenuTitleModel.createVoid("Play List", unused -> {
+        titles.add(MenuTitleModel.createVoid("🎼 Play List", unused -> {
             TerminalMusicController.this.playList();
             return null;
         }));
-        titles.add(MenuTitleModel.createVoid("List Musics", unused -> {
+        titles.add(MenuTitleModel.createVoid("🎶 List Musics", unused -> {
             TerminalMusicController.this.listMusic(0);
             return null;
         }));
-        titles.add(MenuTitleModel.createVoid("List Favorite Musics", unused -> {
+        titles.add(MenuTitleModel.createVoid("⭐ List Favorite Musics", unused -> {
             TerminalMusicController.this.listFavoriteMusic(0);
             return null;
         }));
-        titles.add(MenuTitleModel.createVoid("Search Musics", unused -> {
+        titles.add(MenuTitleModel.createVoid("🔍 Search Musics", unused -> {
             TerminalMusicController.this.searchMusic();
             return null;
         }));
-        titles.add(MenuTitleModel.createVoid("Create Play list", unused -> {
+        titles.add(MenuTitleModel.createVoid("🆕 Create Play list", unused -> {
             TerminalMusicController.this.createPlayList(playList -> {
                 selectPlayList(playList);
                 return null;
@@ -106,13 +104,13 @@ public class TerminalMusicController {
         }));
 
         if (player.isPlaying()) {
-            titles.add(MenuTitleModel.createVoid("Music Controls", unused -> {
+            titles.add(MenuTitleModel.createVoid("🎧 Music Controls", unused -> {
                 playMusic(playedMusic, false, false, nextMusic, preMusic);
                 return null;
             }));
         }
 
-        return MenuModel.numberInput("Main Menu", titles);
+        return MenuModel.numberInput("☰ Main Menu", titles);
     }
 
     public TerminalMusicController() {
@@ -157,6 +155,9 @@ public class TerminalMusicController {
                     failedFetchMusics.printStackTrace(System.out);
                     searchMusic();
                 });
+                return null;
+            }, unused -> {
+                fetchAllMusicFuture(MusicService.repository().searchMusic(name, total, 0));
                 return null;
             });
 
@@ -311,6 +312,9 @@ public class TerminalMusicController {
                     searchMusic();
                 });
                 return null;
+            }, unused -> {
+                fetchAllMusicFuture(MusicService.repository().fetchAllMusic());
+                return null;
             });
 
         }).onFailure(failedFetchPlayList -> {
@@ -338,6 +342,9 @@ public class TerminalMusicController {
                     searchMusic();
                 });
                 return null;
+            }, unused -> {
+                fetchAllMusicFuture(MusicService.repository().fetchFavoriteMusic(total, 0));
+                return null;
             });
 
         }).onFailure(failedFetchPlayList -> {
@@ -359,7 +366,10 @@ public class TerminalMusicController {
             showResultListMusic(offset, LIMIT_FETCH_MUSIC, total, musics, newOffset -> {
                 playListMusics(playListId, newOffset);
                 return null;
-            }, null);
+            }, null, unused -> {
+                fetchAllMusicFuture(MusicService.repository().fetchAllMusicByPlayList(playListId));
+                return null;
+            });
 
         }).onFailure(failedFetchPlayList -> {
             failedFetchPlayList.printStackTrace(System.out);
@@ -367,7 +377,20 @@ public class TerminalMusicController {
         });
     }
 
-    private void showResultListMusic(int offset, int limit, int total, List<MusicEntity> musics, Function<Integer, Void> back, Function<Void, Void> addAllToPlayList) {
+    private void fetchAllMusicFuture(Future<List<MusicEntity>> musicsFuture) {
+        musicsFuture.onSuccess(musics -> {
+            if (musics == null || musics.isEmpty()) {
+                mainMenu();
+                return;
+            }
+            doPlayPlayList(musics, 0);
+        }).onFailure(failedFetchMusics -> {
+            failedFetchMusics.printStackTrace(System.err);
+            mainMenu();
+        });
+    }
+
+    private void showResultListMusic(int offset, int limit, int total, List<MusicEntity> musics, Function<Integer, Void> back, Function<Void, Void> addAllToPlayList, Function<Void, Void> playAll) {
         System.out.printf("List music, Offset: %d , Total: %d\n", offset, total);
         List<MenuTitleModel<Void>> titles = new ArrayList<>();
         if (total > 0) {
@@ -393,8 +416,14 @@ public class TerminalMusicController {
                 }));
             }
             if (addAllToPlayList != null) {
-                titles.add(MenuTitleModel.createVoid("-- Add all to play list", unused -> {
+                titles.add(MenuTitleModel.createVoid("Add all to play list", unused -> {
                     addAllToPlayList.apply(null);
+                    return null;
+                }));
+            }
+            if (playAll != null) {
+                titles.add(MenuTitleModel.createVoid("Play All", unused -> {
+                    playAll.apply(null);
                     return null;
                 }));
             }
@@ -404,7 +433,7 @@ public class TerminalMusicController {
     }
 
     private MenuTitleModel<Void> getMenuTitleBackToMenu() {
-        return MenuTitleModel.createVoid("Main Menu", unused -> {
+        return MenuTitleModel.createVoid("☰ Main Menu", unused -> {
             mainMenu();
             return null;
         });
@@ -541,7 +570,7 @@ public class TerminalMusicController {
         List<MenuTitleModel<Void>> titles = new ArrayList<>();
 
         titles.add(MenuTitleModel.createVoid("Play", unused -> {
-            playPlayList(playList, 0, false);
+            playPlayList(playList);
             return null;
         }));
         titles.add(MenuTitleModel.createVoid("Delete", unused -> {
@@ -576,24 +605,14 @@ public class TerminalMusicController {
         });
     }
 
-    private void playPlayList(PlayListEntity playList, int offset, boolean pre) {
-        Future<List<MusicEntity>> fetchMusicByPlayList = MusicService.repository().fetchMusicByPlayList(playList.getId(), LIMIT_FETCH_MUSIC, 0);
-        Future<Integer> fetchTotalMusicByPlayList = MusicService.repository().fetchTotalMusicByPlayList(playList.getId());
+    private void playPlayList(PlayListEntity playList) {
 
-        Future.join(fetchTotalMusicByPlayList, fetchMusicByPlayList).onSuccess(successFetch -> {
-
-            List<MusicEntity> musics = fetchMusicByPlayList.result();
-            int total = fetchTotalMusicByPlayList.result();
-            if (total == 0) {
-                mainMenu();
-                return;
-            }
+        MusicService.repository().fetchAllMusicByPlayList(playList.getId()).onSuccess(musics -> {
             if (musics == null || musics.isEmpty()) {
                 selectPlayList(playList);
                 return;
             }
-            fillPlayMusicIndex(musics.size());
-            doPlayPlayList(playList, fetchMusicByPlayList.result(), pre ? musics.size() - 1 : 0, LIMIT_FETCH_MUSIC, offset, fetchTotalMusicByPlayList.result(), pre);
+            doPlayPlayList(musics, 0);
         }).onFailure(failed -> {
             failed.printStackTrace(System.out);
             mainMenu();
@@ -601,50 +620,23 @@ public class TerminalMusicController {
 
     }
 
-    private void fillPlayMusicIndex(int size) {
-        playingMusicIndex.clear();
-        IntStream.range(0, size - 1).forEach(playingMusicIndex::add);
-        Collections.shuffle(playingMusicIndex);
-    }
 
-    private void doPlayPlayList(PlayListEntity playList, List<MusicEntity> musics, int index, int limit, int offset, int total, boolean pre) {
-        if (index < 0 || index >= musics.size()) {
-            if (shuffle && pre) {
-                index = 0;
+    private void doPlayPlayList(List<MusicEntity> musics, int index) {
+        playMusic(musics.get(index), false, true, unused -> {
+
+            int newIndex;
+            if (shuffle) {
+                newIndex = random.nextInt(musics.size() - 1);
             } else {
-                if (index < 0) {
-                    playPlayList(playList, Pagination.pre(offset, limit, total), true);
-                } else {
-                    int newOffset = Pagination.next(offset, limit, total);
-                    playPlayList(playList, newOffset == offset ? 0 : newOffset, false);
-                }
-                return;
+                newIndex = index + 1 >= musics.size() ? 0 : index + 1;
             }
-        }
 
-        if (!pre && shuffle && playingMusicIndex.isEmpty()) {
-            int newOffset = Pagination.next(offset, limit, total);
-            playPlayList(playList, newOffset == offset ? 0 : newOffset, false);
-            return;
-        }
-
-        int newIndex = shuffle && !pre ? newPlayListIndex(index) : index;
-        playMusic(musics.get(newIndex), false, true, unused -> {
-            doPlayPlayList(playList, musics, newIndex + 1, limit, offset, total, false);
+            doPlayPlayList(musics, newIndex);
             return null;
         }, unused -> {
-            doPlayPlayList(playList, musics, newIndex - 1, limit, offset, total, true);
+            doPlayPlayList(musics, index - 1 < 0 ? musics.size() - 1 : index - 1);
             return null;
         });
-
-    }
-
-    private int newPlayListIndex(int index) {
-        if (shuffle) {
-            Collections.shuffle(playingMusicIndex);
-            return playingMusicIndex.remove(random.nextInt(playingMusicIndex.size()));
-        }
-        return index;
     }
 
     private void playMusic(MusicEntity music, boolean start, boolean quickStart, Function<Void, Void> next, Function<Void, Void> pre) {
@@ -693,11 +685,6 @@ public class TerminalMusicController {
                 playMusic(playedMusic, true, false, nextMusic, preMusic);
                 return null;
             }));
-            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔁 Repeat [" + (player.isRepeat() ? "on" : "off") + "]", unused -> {
-                player.setRepeat();
-                playMusic(playedMusic, false, false, nextMusic, preMusic);
-                return null;
-            }));
             menuPlayMusicTitles.add(MenuTitleModel.createVoid("ℹ️ Details", unused -> {
                 if (player.isPlaying()) {
                     MenuView.clearConsole();
@@ -709,22 +696,8 @@ public class TerminalMusicController {
                 playMusic(playedMusic, false, false, nextMusic, preMusic);
                 return null;
             }));
-            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔊 Volume [" + player.getVolume() + "]", unused -> {
-                playedMusicVolume();
-                return null;
-            }));
             menuPlayMusicTitles.add(MenuTitleModel.createVoid("⏩ Seek [" + player.getPosition() + "]", unused -> {
                 playedMusicSeek();
-                return null;
-            }));
-            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔇 Mute [" + boolToOnOff(player.isMute()) + "]", unused -> {
-                player.setMute();
-                playMusic(playedMusic, false, false, nextMusic, preMusic);
-                return null;
-            }));
-            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔀 Shuffle [" + boolToOnOff(shuffle) + "]", unused -> {
-                shuffle = !shuffle;
-                playMusic(playedMusic, false, false, nextMusic, preMusic);
                 return null;
             }));
             if (!player.isRepeat() && nextMusic != null) {
@@ -739,6 +712,31 @@ public class TerminalMusicController {
                     return null;
                 }));
             }
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔁 Repeat [" + (player.isRepeat() ? "on" : "off") + "]", unused -> {
+                player.setRepeat();
+                playMusic(playedMusic, false, false, nextMusic, preMusic);
+                return null;
+            }));
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔀 Shuffle [" + boolToOnOff(shuffle) + "]", unused -> {
+                shuffle = !shuffle;
+                playMusic(playedMusic, false, false, nextMusic, preMusic);
+                return null;
+            }));
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔊 Volume [" + player.getVolume() + "]", unused -> {
+                playedMusicVolume();
+                return null;
+            }));
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid("🔇 Mute [" + boolToOnOff(player.isMute()) + "]", unused -> {
+                player.setMute();
+                playMusic(playedMusic, false, false, nextMusic, preMusic);
+                return null;
+            }));
+            menuPlayMusicTitles.add(MenuTitleModel.createVoid(("⭐ Favorite") + " [" + boolToOnOff(playedMusic.isFavorite()) + "]", unused -> {
+                MusicService.repository().setFavorite(playedMusic.getId(), !playedMusic.isFavorite());
+                playedMusic.setFavorite(!playedMusic.isFavorite());
+                playMusic(playedMusic, false, false, nextMusic, preMusic);
+                return null;
+            }));
             menuPlayMusicTitles.add(getMenuTitleBackToMenu());
 
             MenuView.showMenu(MenuModel.numberInput("Music " + FilenameUtils.getName(music.getPath()), menuPlayMusicTitles));
@@ -751,7 +749,7 @@ public class TerminalMusicController {
     }
 
     private void playedMusicVolume() {
-        MenuTitleModel<Integer> getVolumeTitle = new MenuTitleModel<>("Volume [%s] (0-200) (Back: enter)".formatted(player.generateVolumeSeek()), volume -> {
+        MenuTitleModel<Integer> getVolumeTitle = new MenuTitleModel<>("Volume [%s] %d%% (0-200) (Back: enter)".formatted(player.generateVolumeSeek(), player.getVolume()), volume -> {
             if (volume == null) {
                 return null;
             }
@@ -778,7 +776,7 @@ public class TerminalMusicController {
     }
 
     private void playedMusicSeek() {
-        MenuTitleModel<Integer> getVolumeTitle = new MenuTitleModel<>("Seek [%s] (0-100) (Back: enter)".formatted(player.generatePositionSeek()), position -> {
+        MenuTitleModel<Integer> getVolumeTitle = new MenuTitleModel<>("Seek [%s] %s%% (0-100) (Back: enter)".formatted(player.generatePositionSeek(), player.getPosition()), position -> {
             if (position == null) {
                 return null;
             }

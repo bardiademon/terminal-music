@@ -162,13 +162,13 @@ public final class MusicService implements MusicRepository {
 
         String query = """
                 select
-                    "id",
-                    "path",
-                    "favorite",
-                    "last_play",
-                    strftime('%Y/%m/%d %H:%M:%S', "created_at") as "last_play_at",
-                    strftime('%Y/%m/%d %H:%M:%S', "created_at") as "created_at"
-                from "music"
+                    `id`,
+                    `path`,
+                    `favorite`,
+                    `last_play`,
+                     date_format(`created_at`, '%d/%m/%Y %H:%i:%s') as created_at,
+                     date_format(`last_play_at`, '%d/%m/%Y %H:%i:%s') as last_play_at
+                from `music`
                 """;
 
         JsonArray params = new JsonArray();
@@ -427,6 +427,38 @@ public final class MusicService implements MusicRepository {
 
         JsonArray params = new JsonArray()
                 .add(playListId).add(limit).add(offset);
+
+        getConnection().queryWithParams(query, params, resultHandler -> {
+            if (resultHandler.failed()) {
+                promise.fail(resultHandler.cause());
+                return;
+            }
+            promise.complete(MusicMapper.toMusics(resultHandler.result().getRows()));
+        });
+
+        return promise.future();
+    }
+
+    @Override
+    public Future<List<MusicEntity>> fetchAllMusicByPlayList(int playListId) {
+        Promise<List<MusicEntity>> promise = Promise.promise();
+
+        String query = """
+                select
+                    `m`.`id`,
+                    `m`.`path`,
+                    `m`.`favorite`,
+                    `m`.`last_play`,
+                    date_format(`m`.`created_at`, '%d/%m/%Y %H:%i:%s') as created_at,
+                    date_format(`m`.`last_play_at`, '%d/%m/%Y %H:%i:%s') as last_play_at
+                from `play_list_music` plm , `music` m
+                      where `plm`.`play_list_id` = ?
+                            and `m`.`id` = `plm`.`music_id`
+                    order by `m`.`id` desc
+                """;
+
+        JsonArray params = new JsonArray()
+                .add(playListId);
 
         getConnection().queryWithParams(query, params, resultHandler -> {
             if (resultHandler.failed()) {
