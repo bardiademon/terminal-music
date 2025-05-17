@@ -1,9 +1,9 @@
 # 🎵 Terminal Music Player
 
 <div style="display:inline-block;">
-  <img src="screenshots/1.png" width="600" height="380" alt="Screenshot2" />
-  <img src="screenshots/2.png" width="600" height="500" alt="Screenshot1" />
-  <img src="screenshots/3.png" width="600" height="500" alt="Screenshot1" />
+  <img src="screenshots/1.png" alt="Screenshot2" />
+  <img src="screenshots/2.png" width="450" alt="Screenshot1" />
+  <img src="screenshots/3.png" width="450" alt="Screenshot1" />
 </div>
 
 This project is a **terminal-based music player** that runs entirely in the terminal and supports playing various audio file formats.
