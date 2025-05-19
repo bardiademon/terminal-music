@@ -5,11 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ab22986-1609-4dea-90d3-40377c4b5932" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/MusicTerminalApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/MusicTerminalApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/PlayerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/PlayerController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/TerminalMusicController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/controller/TerminalMusicController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/data/repository/MusicRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/data/repository/MusicRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/service/MusicService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bardiademon/music/terminal/service/MusicService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -146,9 +150,9 @@
     </configuration>
     <list>
       <item itemvalue="Application.Unnamed" />
-      <item itemvalue="Application.PlayerController" />
-      <item itemvalue="Application.Pagination" />
       <item itemvalue="Application.MusicTerminalApplication" />
+      <item itemvalue="Application.Pagination" />
+      <item itemvalue="Application.PlayerController" />
     </list>
     <recent_temporary>
       <list>

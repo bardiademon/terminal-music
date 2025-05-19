@@ -6,9 +6,9 @@ import uk.co.caprica.vlcj.media.Meta;
 import uk.co.caprica.vlcj.media.TrackType;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventListener;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URI;
@@ -16,32 +16,28 @@ import java.nio.file.Path;
 
 public class PlayerController implements MediaPlayerEventListener {
 
-    private MediaPlayer mediaPlayer;
+    private EmbeddedMediaPlayer mediaPlayer;
 
     private PlayerListener playerListener;
 
     private boolean isPlay;
     private boolean isPause = false;
-    private boolean isStop = false;
     private boolean isFinished = false;
-
-    private static final String[] VOLUME_CHAR = {"▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"};
 
     public PlayerController() {
     }
 
     private void initial() {
 
-        if (mediaPlayer != null && mediaPlayer.status().isPlaying()) {
-            mediaPlayer.controls().stop();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
         }
 
-        mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
+        mediaPlayer = new MediaPlayerFactory().mediaPlayers().newEmbeddedMediaPlayer();
         mediaPlayer.events().addMediaPlayerEventListener(this);
 
         isPlay = false;
         isPause = false;
-        isStop = false;
         isFinished = false;
     }
 
@@ -51,10 +47,9 @@ public class PlayerController implements MediaPlayerEventListener {
 
     public void play(String path) {
         initial();
-        mediaPlayer.media().start(new File(path).toPath().toUri().toString());
+        mediaPlayer.media().play(new File(path).toPath().toUri().toString());
         isPlay = true;
         isPause = false;
-        isStop = false;
         isFinished = false;
     }
 
@@ -85,16 +80,17 @@ public class PlayerController implements MediaPlayerEventListener {
     }
 
     private String safeFormat(String value) {
-        return value == null ? "-" : value;
+        return value == null ? "" : value;
     }
 
-    public String generateSeek(int value, int percent, int seekTotal, String filledChar, String emptyChar) {
+    public String generateSeek(int value, int percent, int seekTotal, String filledChar, String lastFill, String emptyChar, String color) {
         if (mediaPlayer == null) {
             return "";
         }
         int filledLength = Math.round((value / ((float) percent)) * seekTotal);
-        int emptyLength = seekTotal - filledLength;
-        String filled = filledChar.repeat(filledLength);
+        int emptyLength = Math.max((seekTotal - (filledLength + lastFill.length())), 0);
+        String filled = (color == null || color.isEmpty() ? "" : color) + filledChar.repeat(filledLength) + (color == null || color.isEmpty() ? "" : "\u001B[0m");
+        filled += lastFill;
         String empty = emptyChar.repeat(emptyLength);
         return filled + empty;
     }
@@ -103,45 +99,52 @@ public class PlayerController implements MediaPlayerEventListener {
         if (mediaPlayer == null) {
             return "";
         }
-        int seekLen = VOLUME_CHAR.length;
-        int filledLength = Math.round((getVolume() / ((float) 200)) * seekLen);
-        int emptyLength = seekLen - filledLength;
-        StringBuilder filled = new StringBuilder();
-        for (int i = 0; i < filledLength; i++) {
-            filled.append(VOLUME_CHAR[i]);
-        }
-        String empty = "░".repeat(emptyLength);
-        return filled + empty;
+        return generateSeek(getVolume(), 200, 8, "━", "⬤", "─", "\u001B[38;2;0;255;0m");
     }
 
     public String generatePositionSeek() {
-        return generateSeek(getPosition(), 100, 20, "▓", "░");
+        return generateSeek(getPosition(), 100, 30, "━", "⬤", "─", "\u001B[38;2;0;122;204m");
     }
 
     public void printImage() {
-        if (mediaPlayer == null) {
-            return;
-        }
+        if (mediaPlayer == null) return;
+
         try {
             String path = mediaPlayer.media().meta().get(Meta.ARTWORK_URL);
-            BufferedImage image = ImageIO.read(Path.of(URI.create(path)).toFile());
-            int width = 80;
-            int height = image.getHeight() * width / image.getWidth() / 2;
-            Image scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
-            Graphics2D g = resized.createGraphics();
-            g.drawImage(scaledImage, 0, 0, null);
-            g.dispose();
-            String shades = "@#&$%*o!;:. ";
-            for (int y = 0; y < height; y++) {
-                StringBuilder row = new StringBuilder();
-                for (int x = 0; x < width; x++) {
-                    int color = resized.getRGB(x, y) & 0xFF;
-                    int index = (color * (shades.length() - 1)) / 255;
-                    row.append(shades.charAt(index));
+            BufferedImage original = ImageIO.read(Path.of(URI.create(path)).toFile());
+
+            int targetWidth = 50;
+            int targetHeight = 50;
+
+            BufferedImage resized = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+            for (int y = 0; y < targetHeight; y++) {
+                for (int x = 0; x < targetWidth; x++) {
+                    int srcX = x * original.getWidth() / targetWidth;
+                    int srcY = y * original.getHeight() / targetHeight;
+                    resized.setRGB(x, y, original.getRGB(srcX, srcY));
                 }
+            }
+
+            for (int y = 0; y < targetHeight; y += 2) {
+                StringBuilder row = new StringBuilder();
+                for (int x = 0; x < targetWidth; x++) {
+                    int rgbTop = resized.getRGB(x, y);
+                    int rgbBottom = (y + 1 < targetHeight) ? resized.getRGB(x, y + 1) : rgbTop;
+
+                    int r1 = (rgbTop >> 16) & 0xFF;
+                    int g1 = (rgbTop >> 8) & 0xFF;
+                    int b1 = rgbTop & 0xFF;
+
+                    int r2 = (rgbBottom >> 16) & 0xFF;
+                    int g2 = (rgbBottom >> 8) & 0xFF;
+                    int b2 = rgbBottom & 0xFF;
+                    row.append(String.format("\u001B[38;2;%d;%d;%dm\u001B[48;2;%d;%d;%dm▀",
+                            r1, g1, b1, r2, g2, b2));
+                }
+                row.append("\u001B[0m");
                 System.out.println(row);
             }
+
         } catch (Exception ignored) {
         }
     }
@@ -193,9 +196,9 @@ public class PlayerController implements MediaPlayerEventListener {
     }
 
     public void stop() {
-        isPlay = false;
-        isPause = false;
-        if (mediaPlayer.status().isPlaying()) {
+        if (mediaPlayer != null && mediaPlayer.status().isPlaying()) {
+            isPlay = false;
+            isPause = false;
             mediaPlayer.controls().stop();
         }
     }
@@ -209,11 +212,17 @@ public class PlayerController implements MediaPlayerEventListener {
     }
 
     public int getPosition() {
-        return Math.round(mediaPlayer.status().position() * 100);
+        int round = Math.round(mediaPlayer.status().position() * 100);
+        if (round < 0) {
+            return 0;
+        }
+        return Math.min(round, 100);
     }
 
     public void setRepeat() {
-        mediaPlayer.controls().setRepeat(!mediaPlayer.controls().getRepeat());
+        if (mediaPlayer != null && mediaPlayer.controls() != null) {
+            mediaPlayer.controls().setRepeat(!mediaPlayer.controls().getRepeat());
+        }
     }
 
     public boolean isRepeat() {
@@ -261,7 +270,6 @@ public class PlayerController implements MediaPlayerEventListener {
     @Override
     public void stopped(MediaPlayer mediaPlayer) {
         isPause = false;
-        isStop = true;
         isPlay = false;
     }
 

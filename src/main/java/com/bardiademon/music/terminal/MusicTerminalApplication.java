@@ -7,6 +7,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,8 @@ public class MusicTerminalApplication extends AbstractVerticle {
     private static Vertx vertx;
 
     public static void main(String[] args) {
+        initialTerminal();
+
         System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
         Logger.getLogger("com").setLevel(Level.OFF);
 
@@ -71,6 +74,35 @@ public class MusicTerminalApplication extends AbstractVerticle {
             runnable.run();
             System.out.println("Successfully shutdown -> " + name);
         }));
+    }
+
+    private static void initialTerminal() {
+        System.out.print("Initialing terminal");
+        String osName = System.getProperty("os.name").trim().toLowerCase();
+        System.out.printf(": %s\n", osName);
+        if (osName.contains("windows")) {
+            initialWindowsTerminal();
+        } else if (osName.contains("linux")) {
+            initialLinuxTerminal();
+        } else {
+            System.out.println("Unknown your os");
+        }
+    }
+
+    private static void initialWindowsTerminal() {
+        try {
+            new ProcessBuilder("powershell.exe", "-Command", "$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new()").inheritIO().start().waitFor();
+        } catch (InterruptedException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void initialLinuxTerminal() {
+        try {
+            new ProcessBuilder("bash", "-c", "export LC_ALL=en_US.UTF-8 && export LANG=en_US.UTF-8").inheritIO().start().waitFor();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Vertx getAppVertx() {

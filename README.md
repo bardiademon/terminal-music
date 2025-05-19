@@ -4,6 +4,7 @@
   <img src="screenshots/1.png" alt="Screenshot2" />
   <img src="screenshots/2.png" width="450" alt="Screenshot1" />
   <img src="screenshots/3.png" width="450" alt="Screenshot1" />
+  <img src="screenshots/4.png" width="450" alt="Screenshot1" />
 </div>
 
 This project is a **terminal-based music player** that runs entirely in the terminal and supports playing various audio file formats.
@@ -43,12 +44,8 @@ Follow these steps to set up and run the application:
    ```bash
    cd target
    ```
-
-9. Set UTF-8 encoding for Windows:
-   ```shell
-   $OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new()
-   ```
-10. Run the application:
+   
+9. Run the application:
    ```bash
    java -jar terminal-music-[version].jar
    ```

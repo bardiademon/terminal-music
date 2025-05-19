@@ -57,7 +57,7 @@ public class TerminalMusicController {
                         player.printImage();
                         System.out.println(player.getMeta());
                     }
-                    System.out.printf("\r⏱️ %s ▶️ %s %s / 🔊 %s %d%%",
+                    System.out.printf("\r%s %s %s / 🔊 %s %d%%",
                             DurationUtil.formatDuration(Duration.ofMillis(player.getTime())),
                             player.generatePositionSeek(),
                             DurationUtil.formatDuration(Duration.ofMillis(player.getLength())),
@@ -623,7 +623,6 @@ public class TerminalMusicController {
 
     private void doPlayPlayList(List<MusicEntity> musics, int index) {
         playMusic(musics.get(index), false, true, unused -> {
-
             int newIndex;
             if (shuffle) {
                 newIndex = random.nextInt(musics.size() - 1);
@@ -640,16 +639,15 @@ public class TerminalMusicController {
     }
 
     private void playMusic(MusicEntity music, boolean start, boolean quickStart, Function<Void, Void> next, Function<Void, Void> pre) {
-
-        if (music == null) {
-            System.out.println("Music is null");
-            next.apply(null);
-            return;
-        }
-
         nextMusic = next;
         preMusic = pre;
         playedMusic = music;
+
+        if (playedMusic == null) {
+            System.out.println("Music is null");
+            nextMusic.apply(null);
+            return;
+        }
 
         MusicService.repository().setLatPlay(music.getId());
 
@@ -806,7 +804,6 @@ public class TerminalMusicController {
         if (player.isRepeat()) {
             return;
         }
-        player.stop();
         if (function != null) {
             function.apply(null);
         }
